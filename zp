@@ -1,0 +1,284 @@
+#!/usr/bin/python3
+# 
+# Acronyms are hard but they don't have to be.
+
+import sys
+
+acronyms = {
+  "ACO": {
+    "Term": "Accountable Care Organization",
+    "Description": "Groups of doctors, hospitals and other provider organizations combined together into a single entity through a CMS program that brings together different provider organizations to coordinate care for Medicare patients with the goals of driving greater healthcare value. See here."
+  },
+  "AD": {
+    "Term": "Account Director",
+    "Description": ""
+  },
+  "AMC": {
+    "Term": "Academic Medical Center",
+    "Description": "A healthcare organization that functions as an academic research institute in addition to be a site of care."
+  },
+  "ACV": {
+    "Term": "Annual Contract Value",
+    "Description": "ACV measures the value of a contract over a 12-month period."
+  },
+  "APLD": {
+    "Term": "Anonymized Patient-Level Data",
+    "Description": "Anonymized from claims data and other sources"
+  },
+  "ARR": {
+    "Term": "Annual Recurring Revenue",
+    "Description": "A subscription economy metric that shows the money that come in every year for the life of a subscription (or contract). More specifically, ARR is the value of the recurring revenue of a business's term subscriptions normalized for a single calendar year."
+  },
+  "COE": {
+    "Term": "Center(s) of Excellence",
+    "Description": "Term used for Commercial reference"
+  },
+  "CTs": {
+    "Term": "Clinical Trials",
+    "Description": "Clinical trials that are relevant to a TA. Found by searching Clinicaltrials.gov."
+  },
+  "CTMS": {
+    "Term": "Clinical Trial Management System",
+    "Description": "A clinical trial management system (CTMS) is a software system used by biotechnology and pharmaceutical industries to manage clinical trials in clinical research. The system maintains and manages planning, performing and reporting functions, along with participant contact information, tracking deadlines and milestones."
+  },
+  "PC": {
+    "Term": "Patient Cohort",
+    "Description": ""
+  },
+  "CME": {
+    "Term": "Continuing Medical Education",
+    "Description": "Continuing medical education consists of educational activities which serve to maintain, develop, or increase the knowledge, skills, and professional performance and relationships that a physician uses to provide services for patients, the public, or the profession."
+  },
+  "CMS": {
+    "Term": "Centers for Medicare & Medicaid Services",
+    "Description": "A federal agency within the United States Department of Health and Human Services (HHS) that administers the Medicare program and works in partnership with state governments to administer Medicaid, the State Children's Health Insurance Program (SCHIP), and health insurance portability standards."
+  },
+  "DOD": {
+      "Term": "Definition of Done",
+      "Description": "a description of what the tester and final product person are going to look for in order to determine if a piece of work is complete or not."
+      },
+  "QE": {
+    "Term": "CMS Qualified Entity",
+    "Description": "As a Qualified Entity, Komodo has the ability to work with identified patient-level data on all Medicare beneficiaries to develop and enhance provider performance metrics based on both Medicare data as well as commercial patient-level data from other Komodo partners."
+  },
+  "QECP": {
+    "Term": "CMS Qualified Entity Certification Program",
+    "Description": "The certification process through which an entity becomes a qualified entity."
+  },
+  "CPT": {
+    "Term": "CPT Code",
+    "Description": "The Current Procedural Terminology (CPT) code set is a medical code set maintained by the American Medical Association through the CPT Editorial Panel."
+  },
+  "CU": {
+    "Term": "Customer Universe",
+    "Description": "Set of entities who are relevant to Komodo’s deployment for a particular TA."
+  },
+  "CX": {
+    "Term": "Customer Experience",
+    "Description": "Komodo's Customer Experience Team"
+  },
+  "DE": {
+    "Term": "Data Engineering",
+    "Description": "Komodo's Data Engineering team"
+  },
+  "DS": {
+    "Term": "Data Sciences",
+    "Description": "Komodo's Data Sciences team"
+  },
+  "DRG": {
+    "Term": "Diagnosis Related Group",
+    "Description": "A Diagnosis-Related Group (DRG) is a statistical system of classifying any inpatient stay into groups for the purposes of payment. The DRG classification system divides possible diagnoses into more than 20 major body systems and subdivides them into almost 500 groups for the purpose of Medicare reimbursement."
+  },
+  "Dx code": {
+    "Term": "Diagnosis Code",
+    "Description": ""
+  },
+  "EHR": {
+    "Term": "Electronic Health Record",
+    "Description": ""
+  },
+  "ERD": {
+    "Term": "Engineering Requirement Document",
+    "Description": "A document, created by DE, that lays out the specific engineering requirements for a spec or feature."
+  },
+  "FF": {
+    "Term": "Feature Flag",
+    "Description": "The ability to turn a selected feature \"on\" or \"off\" in Aperture."
+  },
+  "FIP": {
+    "Term": "Founders Incentive Plan",
+    "Description": ""
+  },
+  "GPO": {
+    "Term": "Group Purchasing Organization",
+    "Description": "A medical group purchasing organization might be able to bring the purchasing power and negotiating leverage of large medical consortiums or hospital systems to doctors' offices."
+  },
+  "HCPCS": {
+    "Term": "Healthcare Common Procedure Coding System",
+    "Description": "The umbrella name for the procedure coding system used for most medical billing. Consists of two primary components: CPT codes (HCPCS Level I) and HCPCS Level II, an alphanumeric coding system primary consisting of non-physician services such as ambulance rides and supplies such as drugs, laboratory tests, and devices."
+  },
+  "HEOR": {
+    "Term": "Health Economics Outcomes Research",
+    "Description": ""
+  },
+  "HCO": {
+    "Term": "Health Care Organization",
+    "Description": "Hospitals, etc."
+  },
+  "HCP": {
+    "Term": "Health Care Provider",
+    "Description": "Health Care Providers are persons who have special education in health care and who are directly related to provision of health care services."
+  },
+  "HMS": {
+    "Term": "Health Market Science",
+    "Description": "Health Market Science was a data vendor acquired by LexisNexis. Komodo Health works with HMS/LN as a data source."
+  },
+  "IC": {
+    "Term": "Individual Contributor",
+    "Description": ""
+  },
+  "ICD": {
+    "Term": "International Classification of Disease",
+    "Description": "The International Classification of Diseases (ICD) is the international \"standard diagnostic tool for epidemiology, health management and clinical purposes\". Its full official name is InternationalStatistical Classification of Diseases and Related Health Problems."
+  },
+  "IDN": {
+    "Term": "Integrated Delivery Network",
+    "Description": "An Integrated Delivery Network (IDN) is a formal system of providers and sites of care that provides both health care services and a health insurance plan to patients in a defined geographic area. e.g. Mayo Clinic, Sutter Health. Sometimes the term Integrated Care Network may also be used."
+  },
+  "IRB": {
+    "Term": "Institutional Review Board",
+    "Description": "The Institutional Review Board (IRB) is an administrative body established to protect the rights and welfare of human research subjects recruited to participate in research activities conducted under the auspices of the institution with which it is affiliated."
+  },
+  "JIF": {
+    "Term": "Journal Impact Factor",
+    "Description": "Impact factor, an index based on the frequency with which a journal's articles are cited in scientific publications, is the most widely used citation metric to evaluate the influence of published research and the prestige of researchers."
+  },
+  "KHID": {
+    "Term": "Komodo Health Identifier",
+    "Description": "Unique Komodo Health ID for HCPs or HCOs"
+  },
+  "KOL": {
+    "Term": "Key Opinion Leaders",
+    "Description": "Key Opinion Leader (KOL), also known as an \"influencer\", is a person or organization who has expert knowledge and influence in a respective field. They are trusted by relevant interest groups and have significant effects on consumer behavior."
+  },
+  "MA ": {
+    "Term": "Medical Affairs",
+    "Description": ""
+  },
+  "MAU": {
+    "Term": "Monthly Active Users",
+    "Description": "Metrics are measured by counting the number of unique users during a specific measurement period, such as within the previous 30 days."
+  },
+  "MeSH": {
+    "Term": "MeSH Filter",
+    "Description": "Medical Subject Headings are the controlled vocabulary thesaurus used for indexing articles for PubMed."
+  },
+  "MSL": {
+    "Term": "Medical Science Liaison",
+    "Description": "Medical Affairs professionals"
+  },
+  "MX, Mx": {
+    "Term": "medical claims",
+    "Description": "Mx data = medical data (e.g. in contrast to Rx prescription data)"
+  },
+  "NBA": {
+    "Term": "Next Best Action",
+    "Description": ""
+  },
+  "NLM": {
+    "Term": "National Library of Medicine",
+    "Description": "The National Library of Medicine (NLM), on the NIH campus in Bethesda, Maryland, is the world's largest biomedical library and the developer of electronic information services that delivers data to millions of scientists, health professionals and members of the public around the globe, every day."
+  },
+  "NPI": {
+    "Term": "National Provider Identifier",
+    "Description": "A unique 10-digit identification number issued to health care providers in the United States by the Centers for Medicare and Medicaid Services (CMS)."
+  },
+  "NPPES": {
+    "Term": "National Plan and Provider Enumeration System",
+    "Description": "The Centers for Medicare & Medicaid Services (CMS) has developed the National Plan and Provider Enumeration System (NPPES) to assign standard unique identifiers for health care providers and health plans, knowns as NPIs."
+  },
+  "ODD": {
+    "Term": "On Demand Deployment",
+    "Description": "Vision for an automated TA deployment process."
+  },
+  "OP": {
+    "Term": "Open Payments",
+    "Description": "A dataset from the Centers for Medicare & Medicaid (CMS) that contains information about the payments drug & device companies make to physicians and teaching hospitals for research, as well as general payments for speaking and consulting."
+  },
+  "PBM": {
+    "Term": "Pharmacy Benefits Manager",
+    "Description": "In the United States, a pharmacy benefit manager (PBM) is a third-party administrator (TPA) of prescription drug programs for commercial health plans, self-insured employer plans, Medicare Part D plans, the Federal Employees Health Benefits Program, and state government employee plans."
+  },
+  "P&T": {
+    "Term": "Pharmacy & Therapeutics",
+    "Description": ""
+  },
+  "PRD": {
+    "Term": "Product Release Document",
+    "Description": "A document, created by Product, that lays out the specific requirements for a spec or feature."
+  },
+  "Pubs": {
+    "Term": "Pubs",
+    "Description": "Scientific articles and publications that are relevant to a TA. Found by searching PubMed."
+  },
+  "Px code": {
+    "Term": "Procedure Code",
+    "Description": ""
+  },
+  "PxDx*": {
+    "Term": "Physician-Organization Affiliations File",
+    "Description": "As a caveat, this acronym technically stands for \"Procedures and Diagnoses.\" However, in the context of Komodo Health, this refers to the \"physician to organizations\" file that's part of the claims files for a therapy area."
+  },
+  "RCA": {
+    "Term": "Root Cause Analysis",
+    "Description": "Root cause analysis (RCA) is a method of problem solving used for identifying the root causes of faults or problems."
+  },
+  "RFA": {
+    "Term": "Ready for Acceptance",
+    "Description": "When a feature is ready for acceptance testing."
+  },
+  "RFR": {
+    "Term": "Ready for Release",
+    "Description": "When a feature is ready for external release."
+  },
+  "RML": {
+    "Term": "",
+    "Description": ""
+  },
+  "RWE": {
+    "Term": "Real World Evidence",
+    "Description": "Real world evidence in medicine means evidence obtained from real world data, which are observational data obtained outside the context of randomized controlled trials and generated during routine clinical practice."
+  },
+  "Rx": {
+    "Term": "Prescription",
+    "Description": ""
+  },
+  "SLA": {
+    "Term": "Service Level Agreement",
+    "Description": "A service-level agreement is defined as an official commitment that prevails between a service provider and a client"
+  },
+  "TA": {
+    "Term": "Therapeutic Area",
+    "Description": "Areas of or relating to a particular condition or disease."
+  },
+  "TRD": {
+    "Term": "Therapeutic Relevant Data",
+    "Description": "AKA Corpus"
+  },
+  "TU": {
+    "Term": "Technical Universe",
+    "Description": "Set of entities who have published in scientific journals, were involved in performing clinical trials, have TA relevant claims, or have taken payments in a particular TA. The Technical Universe is customer independent."
+  }
+}
+
+def zurp(acronym):
+    try:
+        term = acronyms[acronym.upper()]
+        print(f"\n  {term['Term']} -> {term['Description']}")
+    except:
+        # acronym not found
+        print(f"\n  :shrug:")
+
+
+if __name__ == "__main__":
+    zurp(sys.argv[1])

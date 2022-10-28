@@ -1,0 +1,118 @@
+#!/bin/bash
+
+source ~/bin/secrets
+
+# navigate to the `prism-ui` repo and get `node` running
+ui() {
+  cd ~/code/prism-ui/
+  nvm use
+}
+
+api() {
+  # navigate to the `prism-api` repo
+  cd ~/code/prism-api/
+  # get `node` running (the language server `pyright` is written in typescript and needs to run in `node`)
+  nvm use --lts
+  # activate the python virtual environment called `prism-api` that's configured to use the version of python that `prism-api` depends on AND that has all of dependencies for the repo installed in it
+  pyenv activate prism-api
+}
+
+# go to the `fs-component-library` repo and get `node` running
+componentLibrary() {
+ cd ~/code/fs-component-library
+ nvm use
+ echo "run \`pnpm run setup\` first to get all the dependencies squared away"
+ echo "if there's a problem with ^, clear \`node_modules\`"
+ echo "use \`bit install\` to do package stuff"
+ echo "make sure to run `nvm use` from the shell running the dev server"
+}
+
+# get setup for the day
+refreshUi() {
+  cred_age=$(($(date +%s) - $(stat -f "%m" ~/.aws/credentials)))
+  cred_valid_time=28800 # 8 hours
+
+  if [[ $cred_age -gt $cred_valid_time ]]; then
+    echo "--> refreshing aws credentials..."
+    gimme-aws-creds
+  fi
+
+  echo "--> navigating to the prism-ui project..."
+  cd ~/code/prism-ui
+
+  echo "--> stopping any running containers if they're still running..."
+  docker-compose stop
+
+  echo "--> pulling down any updates to images used in the project..."
+  docker-compose pull
+
+  echo "--> rebuilding any new images pulled in..."
+  docker-compose build --parallel --force-rm
+
+  # TODO: run a prune on images?
+  echo "--> starting all the containers in the project up again in detatched mode..."
+  docker-compose up -d
+}
+
+# run docker compose in attached mode (shows logs) and shut down containers when exiting the `run` function
+run() {
+  docker-compose up
+  docker-compose down
+}
+
+# throw all running containers into `fzf`
+_containers() {
+  docker ps --format="{{.Names}}" | fzfancy 'CONTAINERS'
+}
+
+# watch logs of a particular container. container name selected with `fzf`
+logs() {
+  docker logs --follow --tail=500 $(_containers)
+}
+
+# drop into a shell in a particular container. container name selected with `fzf`
+yeet() {
+  docker exec -it $(_containers) /bin/sh
+}
+
+# obliterate a lot of docker artifacts. a lot of stuff stored in the $WORKSPACE still exist though
+__nukedocker() {
+  echo "Stopping all running containers"
+  docker stop $(docker ps -q | paste -sd " " -)
+
+  echo "Stopping and removing all containers"
+  docker rm -f $(docker ps -aq | paste -sd " " -)
+
+  echo "Stopping and removing all images"
+  docker rmi -f $(docker images -aq | paste -sd " " -)
+
+  echo "Removing dangling and exited volumes"
+  # TODO: idk if this is really removing _all_ volumes as postgres still has values after running this. that data's written in a volume which should be trashed, right?
+  docker volume rm $(docker volume ls -qf dangling=true)
+  docker volume ls -qf dangling=true
+
+  echo "Removing anything dangling or exited"
+  docker rmi (docker images -q -f "dangling=true")
+  docker rm (docker ps -q -f 'status=exited')
+}
+
+tix() {
+  jira sprint list --current -a$(jira me) --order-by "status" --order-by "updated"
+}
+
+# python stuff
+export PATH="$HOME/.poetry/bin:$PATH"
+
+# pyenv stuff
+export PYENV_ROOT="$HOME/.pyenv"
+command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
+eval "$(pyenv init -)"
+
+# pyenv plugin stuff
+# virtualenv
+eval "$(pyenv virtualenv-init -)"
+
+# aws completions
+complete -C $(which aws_completer) aws
+
+alias work="vim ~/bin/work_scripts"
