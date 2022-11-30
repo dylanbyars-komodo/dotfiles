@@ -70,6 +70,13 @@ logs() {
   docker logs --follow --tail=500 $(_containers)
 }
 
+# like `logs` but with the content piped into `lnav`
+llogs() {
+  container=$(_containers)
+  docker logs --follow --tail=500 $container >& docker.logs & # the last `#` runs this whole process in the background
+  # TODO: can I open `lnav docker.logs` from this function? when I have that here, the logs are not updated
+}
+
 # drop into a shell in a particular container. container name selected with `fzf`
 yeet() {
   docker exec -it $(_containers) /bin/sh
