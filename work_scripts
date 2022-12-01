@@ -73,9 +73,11 @@ logs() {
 # like `logs` but with the content piped into `lnav`
 llogs() {
   container=$(_containers)
-  docker logs --follow --tail=500 $container >& docker.logs & # the last `&` runs this whole process in the background
-  lnav docker.logs
+  logfile=$container.logs
+  docker logs --follow --tail=500 $container >& $logfile & # the last `&` runs this whole process in the background
+  lnav $logfile
   kill $! # kills the `docker logs...` bg process
+  rm $logfile
 }
 
 # drop into a shell in a particular container. container name selected with `fzf`
