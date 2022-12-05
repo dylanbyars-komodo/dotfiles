@@ -60,6 +60,10 @@ run() {
   docker-compose down
 }
 
+fzfancy() {
+  fzf --reverse --height=20 --border=rounded --header=$1
+}
+
 # throw all running containers into `fzf`
 _containers() {
   docker ps --format="{{.Names}}" | fzfancy 'CONTAINERS'
