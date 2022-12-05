@@ -69,13 +69,8 @@ _containers() {
   docker ps --format="{{.Names}}" | fzfancy 'CONTAINERS'
 }
 
-# watch logs of a particular container. container name selected with `fzf`
-logs() {
-  docker logs --follow --tail=500 $(_containers)
-}
-
 # like `logs` but with the content piped into `lnav`
-llogs() {
+logs() {
   container=$(_containers)
   logfile=$container.logs
   docker logs --follow --tail=500 $container >& $logfile & # the last `&` runs this whole process in the background
